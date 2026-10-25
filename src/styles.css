@@ -242,7 +242,7 @@ textarea {
   resize: vertical;
   min-height: 80px;
 }
-label.field {
+.field {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -670,10 +670,10 @@ label.field {
 .task-card.dragging {
   opacity: 0.4;
 }
+/* No rotate/scale here: it changes the card's box and breaks keyboard drag (arrow keys). */
 .task-card.overlay {
   box-shadow: var(--shadow-md);
   cursor: grabbing;
-  transform: rotate(1.5deg);
 }
 .task-card .title {
   font-weight: 550;
@@ -795,6 +795,12 @@ label.field {
 .mark-badge {
   background: color-mix(in srgb, var(--mark) 16%, transparent);
   color: var(--mark);
+}
+/* On top of photos the badge must be solid to stay readable. */
+.media-tile .mark-badge {
+  background: var(--mark);
+  color: white;
+  box-shadow: var(--shadow-sm);
 }
 
 .media-scroller {
@@ -962,19 +968,18 @@ label.field {
   display: flex;
   align-items: center;
   gap: 4px;
+  width: 100%;
   padding: 1px 5px;
+  border: none;
+  border-left: 3px solid var(--chip);
   border-radius: 4px;
+  font: inherit;
   font-size: 11px;
+  text-align: left;
   background: color-mix(in srgb, var(--chip) 16%, var(--bg-elevated));
   color: var(--text);
-  border-left: 3px solid var(--chip);
   cursor: pointer;
   min-width: 0;
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
-  font-family: inherit;
-  text-align: left;
 }
 .chip.posted {
   opacity: 0.6;
