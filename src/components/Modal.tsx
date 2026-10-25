@@ -13,19 +13,30 @@ interface ModalProps {
 /** A dialog box over the page. Esc or a click outside closes it. */
 export function Modal({ title, onClose, children, footer, wide }: ModalProps) {
   const boxRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
+  // Focus the first field once, when the dialog opens, so the user can type right away.
+  useEffect(() => {
+    boxRef.current
+      ?.querySelector<HTMLElement>(
+        ".modal-body input, .modal-body textarea, .modal-body select, button",
+      )
+      ?.focus();
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.stopPropagation();
-        onClose();
+        onCloseRef.current();
       }
     };
     window.addEventListener("keydown", onKey, true);
-    // Focus the first field so the user can type right away.
-    boxRef.current?.querySelector<HTMLElement>("input, textarea, select, button")?.focus();
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [onClose]);
+  }, []);
 
   return (
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
