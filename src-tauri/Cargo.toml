@@ -1,0 +1,29 @@
+[package]
+name = "juggle"
+version = "0.1.0"
+description = "Projects, tasks, notes, files, media packs and a content calendar in one place."
+authors = ["Juggle"]
+edition = "2021"
+rust-version = "1.80"
+
+[lib]
+# The `_lib` suffix avoids a name clash with the binary on Windows.
+name = "juggle_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.37", features = ["bundled", "functions"] }
+thiserror = "2"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+trash = "5"
+
+[dev-dependencies]
+tempfile = "3"
