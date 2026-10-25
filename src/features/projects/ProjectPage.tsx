@@ -45,6 +45,8 @@ export function ProjectPage() {
       </div>
     );
 
+  // Always use full paths: relative links inside this "/*" route would stack up.
+  const base = `/projects/${project.id}`;
   const tab = (to: string, label: string, Icon: typeof FileText) => (
     <NavLink to={to} className="tab">
       <Icon size={15} /> {label}
@@ -86,10 +88,10 @@ export function ProjectPage() {
       {project.description && <p className="muted">{project.description}</p>}
 
       <div className="tabs">
-        {tab("board", t.projects.tabs.board, KanbanSquare)}
-        {tab("notes", t.projects.tabs.notes, FileText)}
-        {tab("files", t.projects.tabs.files, Folder)}
-        {tab("media", t.projects.tabs.media, Images)}
+        {tab(`${base}/board`, t.projects.tabs.board, KanbanSquare)}
+        {tab(`${base}/notes`, t.projects.tabs.notes, FileText)}
+        {tab(`${base}/files`, t.projects.tabs.files, Folder)}
+        {tab(`${base}/media`, t.projects.tabs.media, Images)}
       </div>
 
       <Routes>
@@ -98,7 +100,7 @@ export function ProjectPage() {
         <Route path="files" element={<FilesTab key={project.id} projectId={project.id} />} />
         <Route path="media" element={<MediaTab key={project.id} project={project} />} />
         <Route path="media/:packId" element={<PackView />} />
-        <Route path="*" element={<Navigate to="board" replace />} />
+        <Route path="*" element={<Navigate to={`${base}/board`} replace />} />
       </Routes>
 
       {editing && <ProjectDialog project={project} onClose={() => setEditing(false)} />}

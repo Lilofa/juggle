@@ -25,6 +25,8 @@ export function MediaTab({ project }: { project: Project }) {
   const [renaming, setRenaming] = useState<MediaPack | null>(null);
   const [forgetting, setForgetting] = useState<MediaPack | null>(null);
 
+  const openPack = (packId: number) => navigate(`/projects/${project.id}/media/${packId}`);
+
   if (error) return <ErrorText error={error} />;
   if (!packs) return null;
 
@@ -55,8 +57,8 @@ export function MediaTab({ project }: { project: Project }) {
               className="card pack-card"
               role="link"
               tabIndex={0}
-              onClick={() => navigate(String(pack.id))}
-              onKeyDown={(e) => e.key === "Enter" && navigate(String(pack.id))}
+              onClick={() => openPack(pack.id)}
+              onKeyDown={(e) => e.key === "Enter" && openPack(pack.id)}
             >
               <div className="row">
                 <h2 className="ellipsis">{pack.name}</h2>
@@ -102,7 +104,7 @@ export function MediaTab({ project }: { project: Project }) {
         <ImportDialog
           projectId={project.id}
           onClose={() => setImporting(false)}
-          onOpenPack={(id) => navigate(String(id))}
+          onOpenPack={openPack}
         />
       )}
       {renaming && (
