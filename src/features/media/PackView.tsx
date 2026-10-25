@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ArrowLeft, Download, ExternalLink, FolderOpen, Play } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, Film, FolderOpen, Play } from "lucide-react";
 import {
   exportMedia,
   getMediaPack,
@@ -270,11 +270,18 @@ function Thumb({ item }: { item: MediaItem }) {
     };
   }, [item.id, item.kind]);
 
+  if (failed) return <Film size={36} className="muted" aria-hidden />;
   if (item.kind === "video") {
     // The browser shows the first frame. Only visible tiles exist, so this stays light.
-    return <video src={`${convertFileSrc(item.path)}#t=0.5`} preload="metadata" muted />;
+    return (
+      <video
+        src={`${convertFileSrc(item.path)}#t=0.5`}
+        preload="metadata"
+        muted
+        onError={() => setFailed(true)}
+      />
+    );
   }
-  if (failed) return <span className="small muted">?</span>;
   return src ? <img src={src} alt={item.fileName} draggable={false} /> : null;
 }
 
@@ -337,7 +344,7 @@ function Preview({
   return (
     <div className="preview" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       {item.kind === "video" ? (
-        <video key={item.id} src={src} controls autoPlay />
+        <PreviewVideo key={item.id} src={src} />
       ) : (
         <img key={item.id} src={src} alt={item.fileName} />
       )}
@@ -373,4 +380,17 @@ function Preview({
       </div>
     </div>
   );
+}
+
+/** Plays a video, or explains what to do when this system cannot play it. */
+function PreviewVideo({ src }: { src: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <div className="bar">
+        <Film size={20} /> {t.media.videoCannotPlay}
+      </div>
+    );
+  }
+  return <video src={src} controls autoPlay onError={() => setFailed(true)} />;
 }

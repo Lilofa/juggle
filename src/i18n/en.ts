@@ -123,6 +123,8 @@ export const en = {
       "The pack and its marks are removed from the app. The copied files stay in the Library folder.",
     keysHint: "Keys: 1 Use · 2 Maybe · 3 Reject · 0 Clear · arrows Move · Space Preview",
     openExternal: "Open in default app",
+    videoCannotPlay:
+      "This video cannot play inside Juggle on this computer. Use “Open in default app”.",
     back: "All packs",
     noItems: "No files match this filter.",
     previewClose: "Close preview (Space or Esc)",
