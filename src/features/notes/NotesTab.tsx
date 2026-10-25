@@ -18,7 +18,7 @@ const AUTOSAVE_MS = 600;
 
 export function NotesTab({ projectId }: { projectId: number }) {
   const toast = useToast();
-  const { data: notes, error } = useData(() => listNotes(projectId), [projectId]);
+  const { data: notes, error, reload } = useData(() => listNotes(projectId), [projectId]);
   const [params, setParams] = useSearchParams();
   const selectedId = Number(params.get("note")) || notes?.[0]?.id;
   const selected = notes?.find((n) => n.id === selectedId);
@@ -61,7 +61,7 @@ export function NotesTab({ projectId }: { projectId: number }) {
         ))}
       </div>
       {selected ? (
-        <NoteEditor key={selected.id} note={selected} />
+        <NoteEditor key={selected.id} note={selected} onSaved={reload} />
       ) : (
         <div className="card">
           <EmptyState>{t.notes.pick}</EmptyState>
@@ -71,7 +71,8 @@ export function NotesTab({ projectId }: { projectId: number }) {
   );
 }
 
-function NoteEditor({ note }: { note: Note }) {
+/** Edits one note. `onSaved` refreshes the list on the left (titles and order). */
+function NoteEditor({ note, onSaved }: { note: Note; onSaved: () => void }) {
   const toast = useToast();
   const [title, setTitle] = useState(note.title);
   const [body, setBody] = useState(note.body);
@@ -85,6 +86,7 @@ function NoteEditor({ note }: { note: Note }) {
     try {
       await updateNote(note.id, latest.current.title, latest.current.body);
       setStatus("saved");
+      onSaved();
     } catch (e) {
       toast(errorMessage(e), "error");
     }
